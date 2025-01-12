@@ -1,5 +1,7 @@
-package cafeboard;
+package cafeboard.post;
 
+import cafeboard.board.Board;
+import cafeboard.board.BoardRepository;
 import org.springframework.stereotype.Service;
 
 @Service

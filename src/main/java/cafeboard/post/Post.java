@@ -1,5 +1,6 @@
-package cafeboard;
+package cafeboard.post;
 
+import cafeboard.board.Board;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

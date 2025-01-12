@@ -1,4 +1,4 @@
-package cafeboard;
+package cafeboard.post;
 
 public record CreatePostRequest(
         String title,

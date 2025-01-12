@@ -1,4 +1,4 @@
-package cafeboard;
+package cafeboard.post;
 
 import java.time.LocalDateTime;
 

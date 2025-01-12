@@ -1,4 +1,4 @@
-package cafeboard;
+package cafeboard.utils;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;

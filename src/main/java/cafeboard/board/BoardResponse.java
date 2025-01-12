@@ -1,4 +1,4 @@
-package cafeboard;
+package cafeboard.board;
 
 public record BoardResponse(
         long id,
