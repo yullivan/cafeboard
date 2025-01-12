@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,9 @@ public class Post {
 
     private String content;
 
+    @ManyToOne
+    private Board board;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime updatedAt = LocalDateTime.now();
@@ -25,9 +29,10 @@ public class Post {
     protected Post() {
     }
 
-    public Post(String title, String content) {
+    public Post(String title, String content, Board board) {
         this.title = title;
         this.content = content;
+        this.board = board;
     }
 
     public Long getId() {
