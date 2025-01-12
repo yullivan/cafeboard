@@ -1,5 +1,6 @@
 package cafeboard;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,5 +32,10 @@ public class BoardRestController {
     @PutMapping("/boards/{boardId}")
     public BoardResponse update(@PathVariable long boardId, @RequestBody CreateBoardRequest request) {
         return boardService.update(boardId, request);
+    }
+
+    @DeleteMapping("/boards/{boardId}")
+    public void deleteById(@PathVariable long boardId) {
+        boardService.deleteById(boardId);
     }
 }

@@ -130,4 +130,55 @@ public class BoardAcceptanceTest {
             assertThat(board.title()).isEqualTo(변경_후_제목);
         });
     }
+
+    @DisplayName("게시판을 삭제한다.")
+    @Test
+    void deleteBoard() {
+        // given
+        // 게시판 생성 1
+        BoardResponse 생성된_게시판 = RestAssured
+                .given()
+                .contentType(ContentType.JSON)
+                .body(new CreateBoardRequest("공지사항"))
+                .when()
+                .post("/boards")
+                .then()
+                .extract()
+                .as(BoardResponse.class);
+
+        // 게시판 생성 2
+        RestAssured
+                .given()
+                .contentType(ContentType.JSON)
+                .body(new CreateBoardRequest("자유게시판"))
+                .when()
+                .post("/boards")
+                .then()
+                .extract()
+                .as(BoardResponse.class);
+
+        // when
+        // 게시판 삭제
+        RestAssured
+                .given().log().all()
+                .pathParam("boardId", 생성된_게시판.id())
+                .when()
+                .delete("/boards/{boardId}")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        // then
+        // 게시판 목록 조회
+        List<BoardResponse> boards = RestAssured
+                .given().log().all()
+                .when()
+                .get("/boards")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .jsonPath()
+                .getList(".", BoardResponse.class);
+
+        assertThat(boards).allMatch(board -> !board.title().equals(생성된_게시판.title()));
+    }
 }

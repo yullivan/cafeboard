@@ -34,4 +34,8 @@ public class BoardService {
         board.changeTitle(request.title());
         return new BoardResponse(board.getId(), board.getTitle());
     }
+
+    public void deleteById(long boardId) {
+        boardRepository.deleteById(boardId);
+    }
 }
