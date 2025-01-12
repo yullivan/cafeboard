@@ -1,8 +1,10 @@
 package cafeboard;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class BoardService {
@@ -23,5 +25,13 @@ public class BoardService {
                 .stream()
                 .map(board -> new BoardResponse(board.getId(), board.getTitle()))
                 .toList();
+    }
+
+    @Transactional
+    public BoardResponse update(long boardId, CreateBoardRequest request) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new NoSuchElementException("게시판을 찾을 수 없습니다 id: " + boardId));
+        board.changeTitle(request.title());
+        return new BoardResponse(board.getId(), board.getTitle());
     }
 }

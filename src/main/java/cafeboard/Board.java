@@ -30,4 +30,8 @@ public class Board {
     public String getTitle() {
         return title;
     }
+
+    public void changeTitle(String title) {
+        this.title = title;
+    }
 }
