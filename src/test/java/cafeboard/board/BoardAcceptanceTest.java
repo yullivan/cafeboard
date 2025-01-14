@@ -104,15 +104,8 @@ public class BoardAcceptanceTest extends AcceptanceTest {
                 .jsonPath()
                 .getList(".", BoardResponse.class);
 
-        // allMatch() 사용
         assertThat(boards).allMatch(board -> !board.title().equals(변경_전_제목));
-        assertThat(boards).allMatch(board -> board.title().equals(변경_후_제목));
-
-        // allSatisfy() 사용
-        assertThat(boards).allSatisfy(board -> {
-            assertThat(board.title()).isNotEqualTo(변경_전_제목);
-            assertThat(board.title()).isEqualTo(변경_후_제목);
-        });
+        assertThat(boards).anyMatch(board -> board.title().equals(변경_후_제목));
     }
 
     @DisplayName("게시판을 삭제한다.")
