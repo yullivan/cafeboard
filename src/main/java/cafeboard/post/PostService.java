@@ -51,4 +51,15 @@ public class PostService {
                 post.getUpdatedAt()
         );
     }
+
+    public void deleteById(long postId, String username) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NoSuchElementException("게시글을 찾을 수 없습니다. ID: " + postId));
+
+        if (!post.getWriter().getUsername().equals(username)) {
+            throw new IllegalArgumentException("게시글 삭제 권한이 없습니다.");
+        }
+
+        postRepository.deleteById(postId);
+    }
 }
