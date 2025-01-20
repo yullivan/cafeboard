@@ -1,5 +1,7 @@
 package cafeboard.post;
 
+import cafeboard.TokenUtils;
+import cafeboard.TokenValidator;
 import cafeboard.member.JwtProvider;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,10 +17,12 @@ public class PostRestController {
 
     private final PostService postService;
     private final JwtProvider jwtProvider;
+    private final TokenValidator tokenValidator;
 
-    public PostRestController(PostService postService, JwtProvider jwtProvider) {
+    public PostRestController(PostService postService, JwtProvider jwtProvider, TokenValidator tokenValidator) {
         this.postService = postService;
         this.jwtProvider = jwtProvider;
+        this.tokenValidator = tokenValidator;
     }
 
     @PostMapping("/posts")
@@ -26,22 +30,8 @@ public class PostRestController {
             @RequestBody CreatePostRequest request,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String bearerToken) {
 
-        String token = null;
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            token = bearerToken.substring(7);
-        }
-
-        if (token == null) {
-            throw new IllegalArgumentException("로그인 정보가 유효하지 않습니다");
-        }
-
-        // 유효한 JWT 토큰인지 검증
-        if (!jwtProvider.isValidToken(token)) {
-            throw new IllegalArgumentException("로그인 정보가 유효하지 않습니다");
-        }
-
-        // 토큰 데이터 읽기 - 요청 보낸 사람이 누구인지 확인
-        String username = jwtProvider.getSubject(token);
+        String token = TokenUtils.extractToken(bearerToken);
+        String username = tokenValidator.validateAndGetUsername(token);
 
         return postService.create(request, username);
     }
@@ -56,22 +46,8 @@ public class PostRestController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String bearerToken,
             @PathVariable long postId) {
 
-        String token = null;
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            token = bearerToken.substring(7);
-        }
-
-        if (token == null) {
-            throw new IllegalArgumentException("로그인 정보가 유효하지 않습니다");
-        }
-
-        // 유효한 JWT 토큰인지 검증
-        if (!jwtProvider.isValidToken(token)) {
-            throw new IllegalArgumentException("로그인 정보가 유효하지 않습니다");
-        }
-
-        // 토큰 데이터 읽기 - 요청 보낸 사람이 누구인지 확인
-        String username = jwtProvider.getSubject(token);
+        String token = TokenUtils.extractToken(bearerToken);
+        String username = tokenValidator.validateAndGetUsername(token);
 
         postService.deleteById(postId, username);
     }
