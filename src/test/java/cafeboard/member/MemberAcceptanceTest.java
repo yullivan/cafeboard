@@ -4,10 +4,14 @@ import cafeboard.AcceptanceTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
+
+    @Autowired
+    JwtProvider jwtProvider;
 
     @Test
     void createMember() {
@@ -23,7 +27,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void login() {
+    void loginTest() {
         // given
         final String username = "doraemon";
         final String password = "dora!23";
@@ -52,6 +56,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .as(LoginResponse.class);
 
         // then
-        assertThat(loginResponse.accessToken()).isEqualTo("token");
+        assertThat(loginResponse.accessToken()).isNotNull();
+        assertThat(jwtProvider.isValidToken(loginResponse.accessToken())).isTrue();
     }
 }

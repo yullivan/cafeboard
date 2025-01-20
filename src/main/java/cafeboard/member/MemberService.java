@@ -1,16 +1,17 @@
 package cafeboard.member;
 
 import cafeboard.SecurityUtils;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final JwtProvider jwtProvider;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository, JwtProvider jwtProvider) {
         this.memberRepository = memberRepository;
+        this.jwtProvider = jwtProvider;
     }
 
     // 회원 생성
@@ -29,6 +30,6 @@ public class MemberService {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 틀렸습니다.");
         }
 
-        return new LoginResponse("token");
+        return new LoginResponse(jwtProvider.createToken(member.getUsername()));
     }
 }
