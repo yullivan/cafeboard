@@ -6,6 +6,8 @@ import cafeboard.member.Member;
 import cafeboard.member.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class PostService {
 
@@ -33,5 +35,20 @@ public class PostService {
                 post.getWriter().getNickname(),
                 post.getCreatedAt(),
                 post.getUpdatedAt());
+    }
+
+    public PostDetailResponse findById(long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NoSuchElementException("게시글을 찾을 수 없습니다. ID: " + postId));
+
+        return new PostDetailResponse(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getWriter().getId(),
+                post.getWriter().getNickname(),
+                post.getCreatedAt(),
+                post.getUpdatedAt()
+        );
     }
 }

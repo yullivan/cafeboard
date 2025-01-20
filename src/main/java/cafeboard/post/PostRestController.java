@@ -2,6 +2,8 @@ package cafeboard.post;
 
 import cafeboard.member.JwtProvider;
 import org.springframework.http.HttpHeaders;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -41,5 +43,10 @@ public class PostRestController {
         String username = jwtProvider.getSubject(token);
 
         return postService.create(request, username);
+    }
+
+    @GetMapping("/posts/{postId}")
+    public PostDetailResponse findById(@PathVariable long postId) {
+        return postService.findById(postId);
     }
 }
