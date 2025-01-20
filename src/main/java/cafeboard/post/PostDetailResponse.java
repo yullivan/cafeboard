@@ -6,6 +6,8 @@ public record PostDetailResponse(
         long id,
         String title,
         String content,
+        long writerId,
+        String writerNickname,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
