@@ -1,5 +1,6 @@
 package cafeboard.member;
 
+import cafeboard.SecurityUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,5 +51,10 @@ public class Member {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public boolean authenticate(String rawPassword) {
+        String hashedInputPassword = SecurityUtils.sha256Encrypt(rawPassword);
+        return password.equals(hashedInputPassword);
     }
 }

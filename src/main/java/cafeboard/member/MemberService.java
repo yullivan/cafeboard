@@ -20,4 +20,15 @@ public class MemberService {
                 SecurityUtils.sha256Encrypt(request.password()),
                 request.nickname()));
     }
+
+    public LoginResponse login(LoginRequest request) {
+        Member member = memberRepository.findByUsername(request.username())
+                .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 틀렸습니다."));
+
+        if (!member.authenticate(request.password())) {
+            throw new IllegalArgumentException("아이디 또는 비밀번호가 틀렸습니다.");
+        }
+
+        return new LoginResponse("token");
+    }
 }

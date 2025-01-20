@@ -21,4 +21,9 @@ public class MemberRestController {
     public void create(@Valid @RequestBody CreateMemberRequest request) {
         memberService.create(request);
     }
+
+    @PostMapping("/login")
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+        return memberService.login(request);
+    }
 }
