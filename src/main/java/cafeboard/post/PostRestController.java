@@ -1,8 +1,8 @@
 package cafeboard.post;
 
-import cafeboard.TokenUtils;
-import cafeboard.TokenValidator;
+import cafeboard.LoginMemberResolver;
 import cafeboard.member.JwtProvider;
+import cafeboard.member.Member;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +17,12 @@ public class PostRestController {
 
     private final PostService postService;
     private final JwtProvider jwtProvider;
-    private final TokenValidator tokenValidator;
+    private final LoginMemberResolver loginMemberResolver;
 
-    public PostRestController(PostService postService, JwtProvider jwtProvider, TokenValidator tokenValidator) {
+    public PostRestController(PostService postService, JwtProvider jwtProvider, LoginMemberResolver loginMemberResolver) {
         this.postService = postService;
         this.jwtProvider = jwtProvider;
-        this.tokenValidator = tokenValidator;
+        this.loginMemberResolver = loginMemberResolver;
     }
 
     @PostMapping("/posts")
@@ -30,10 +30,9 @@ public class PostRestController {
             @RequestBody CreatePostRequest request,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String bearerToken) {
 
-        String token = TokenUtils.extractToken(bearerToken);
-        String username = tokenValidator.validateAndGetUsername(token);
+        Member member = loginMemberResolver.resolveMemberFromToken(bearerToken);
 
-        return postService.create(request, username);
+        return postService.create(request, member);
     }
 
     @GetMapping("/posts/{postId}")
@@ -46,9 +45,8 @@ public class PostRestController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String bearerToken,
             @PathVariable long postId) {
 
-        String token = TokenUtils.extractToken(bearerToken);
-        String username = tokenValidator.validateAndGetUsername(token);
+        Member member = loginMemberResolver.resolveMemberFromToken(bearerToken);
 
-        postService.deleteById(postId, username);
+        postService.deleteById(postId, member);
     }
 }

@@ -3,6 +3,8 @@ package cafeboard.member;
 import cafeboard.SecurityUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class MemberService {
 
@@ -31,5 +33,10 @@ public class MemberService {
         }
 
         return new LoginResponse(jwtProvider.createToken(member.getUsername()));
+    }
+
+    public Member findByUsername(String username) {
+        return memberRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다 username: " + username));
     }
 }

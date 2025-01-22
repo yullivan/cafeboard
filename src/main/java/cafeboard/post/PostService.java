@@ -21,11 +21,9 @@ public class PostService {
         this.memberRepository = memberRepository;
     }
 
-    public PostDetailResponse create(CreatePostRequest request, String username) {
+    public PostDetailResponse create(CreatePostRequest request, Member member) {
         Board board = boardRepository.findById(request.boardId())
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 게시판 id: " + request.boardId()));
-        Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다. Username:" + username));
         Post post = postRepository.save(new Post(request.title(), request.content(), board, member));
         return new PostDetailResponse(
                 post.getId(),
@@ -52,11 +50,11 @@ public class PostService {
         );
     }
 
-    public void deleteById(long postId, String username) {
+    public void deleteById(long postId, Member member) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NoSuchElementException("게시글을 찾을 수 없습니다. ID: " + postId));
 
-        if (!post.getWriter().getUsername().equals(username)) {
+        if (!post.getWriter().getUsername().equals(member.getUsername())) {
             throw new IllegalArgumentException("게시글 삭제 권한이 없습니다.");
         }
 
